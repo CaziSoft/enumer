@@ -45,15 +45,15 @@ func (af *arrayFlags) Set(value string) error {
 
 var (
 	typeNames       = flag.String("type", "", "comma-separated list of type names; must be set")
-	sql             = flag.Bool("sql", false, "if true, the Scanner and Valuer interface will be implemented.")
-	json            = flag.Bool("json", false, "if true, json marshaling methods will be generated. Default: false")
-	yaml            = flag.Bool("yaml", false, "if true, yaml marshaling methods will be generated. Default: false")
-	text            = flag.Bool("text", false, "if true, text marshaling methods will be generated. Default: false")
-	gql             = flag.Bool("gql", false, "if true, the MarshalGQL and UnmarshalGQL interface of GQLGen will be implemented.")
-	output          = flag.String("output", "", "output file name; default srcdir/<type>_enumer.go")
-	transformMethod = flag.String("transform", "noop", "enum item name transformation method. Default: noop")
+	sql             = flag.Bool("sql", true, "if true, the Scanner and Valuer interface will be implemented. Default: true")
+	json            = flag.Bool("json", true, "if true, json marshaling methods will be generated. Default: true")
+	yaml            = flag.Bool("yaml", true, "if true, yaml marshaling methods will be generated. Default: true")
+	text            = flag.Bool("text", true, "if true, text marshaling methods will be generated. Default: true")
+	gql             = flag.Bool("gql", true, "if true, the MarshalGQL and UnmarshalGQL interface of GQLGen will be implemented.")
+	output          = flag.String("output", "", "output file name; default srcdir/enumer_<type>_gen.go")
+	transformMethod = flag.String("transform", "snake", "enum item name transformation method. Default: noop")
 	trimPrefix      = flag.String("trimprefix", "", "transform each item name by removing a prefix. Default: \"\"")
-	lineComment     = flag.Bool("linecomment", false, "use line comment text as printed text when present")
+	lineComment     = flag.Bool("linecomment", true, "use line comment text as printed text")
 )
 
 var comments arrayFlags
@@ -136,7 +136,7 @@ func main() {
 	// Figure out filename to write to
 	outputName := *output
 	if outputName == "" {
-		baseName := fmt.Sprintf("%s_enumer.go", types[0])
+		baseName := fmt.Sprintf("enumer_%s_gen.go", types[0])
 		outputName = filepath.Join(dir, strings.ToLower(baseName))
 	}
 
@@ -342,6 +342,8 @@ func (g *Generator) replaceValuesWithLineComment(values []Value) {
 	for i, val := range values {
 		if val.comment != "" {
 			values[i].name = val.comment
+		} else {
+			panic("Must provide linecomment for all values when option is on")
 		}
 	}
 }
