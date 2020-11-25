@@ -13,16 +13,17 @@ const gqlUnMarshalMethod = `func (i *%[1]s) UnmarshalGQL(v interface{}) error {
 		return fmt.Errorf("enums must be strings")
 	}
 
-	if !i.IsA%[1]s() {
-		return fmt.Errorf("%%s is not a valid %[1]s", str)
-	}
-
 	val, err := %[1]sString(str)
 	if err != nil {
 		return err
 	}
 
 	*i = val
+
+	if !i.IsA%[1]s() {
+		return fmt.Errorf("%%s is not a valid %[1]s", str)
+	}
+	
 	return nil
 }
 `
