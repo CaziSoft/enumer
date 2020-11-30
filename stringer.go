@@ -343,7 +343,7 @@ func (g *Generator) replaceValuesWithLineComment(values []Value) {
 		if val.comment != "" {
 			values[i].name = val.comment
 		} else {
-			panic("Must provide linecomment for all values when option is on")
+			panic(fmt.Errorf("Missing linecomment for %s", values[i].name))
 		}
 	}
 }
