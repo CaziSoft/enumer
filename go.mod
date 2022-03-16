@@ -1,4 +1,4 @@
-module github.com/jamscloud/enumer
+module github.com/cazisoft/enumer
 
 go 1.18
 
